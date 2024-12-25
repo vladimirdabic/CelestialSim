@@ -30,8 +30,7 @@ namespace CelestialSystem
 
             if (distanceSquared == 0) return;
 
-            // G / 2 because I have no idea why the force is double than its supposed to be
-            float force = (GravitationalConstant / 2f) * (target.Mass * source.Mass) / distanceSquared;
+            float force = GravitationalConstant * (target.Mass * source.Mass) / distanceSquared;
 
             // Unit vector
             Vector2 forceDirection = vecTargetToSource / vecTargetToSource.Length();
@@ -41,7 +40,9 @@ namespace CelestialSystem
             // a = F/m
             // v += a * dt
             target.Velocity += (forceVector / target.Mass) * deltaTime;
-            source.Velocity -= (forceVector / source.Mass) * deltaTime;
+            
+            // Not actually needed since the body comes later in the update loop...
+            //source.Velocity -= (forceVector / source.Mass) * deltaTime;
         }
 
         public void Draw(Renderer r)
