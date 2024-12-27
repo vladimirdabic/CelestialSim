@@ -40,7 +40,8 @@ namespace CelestialSystem
             // a = F/m
             // v += a * dt
             target.Velocity += (forceVector / target.Mass) * deltaTime;
-            
+            target.TotalForce += forceVector;
+
             // Not actually needed since the body comes later in the update loop...
             //source.Velocity -= (forceVector / source.Mass) * deltaTime;
         }
@@ -65,6 +66,7 @@ namespace CelestialSystem
             for(int i = 0; i < bodies.Length; i++)
             {
                 CelestialBody target = bodies[i];
+                target.TotalForce = Vector2.Zero;
                 
                 for(int j = 0; j < bodies.Length; j++)
                 {

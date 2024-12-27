@@ -43,6 +43,8 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showVelocityToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showForcesMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tracePathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -152,21 +154,21 @@
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -174,6 +176,8 @@
             // 
             this.visualToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showVelocityToolStripMenuItem,
+            this.showForcesMenuItem1,
+            this.toolStripSeparator1,
             this.tracePathToolStripMenuItem});
             this.visualToolStripMenuItem.Name = "visualToolStripMenuItem";
             this.visualToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
@@ -183,14 +187,26 @@
             // 
             this.showVelocityToolStripMenuItem.CheckOnClick = true;
             this.showVelocityToolStripMenuItem.Name = "showVelocityToolStripMenuItem";
-            this.showVelocityToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.showVelocityToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.showVelocityToolStripMenuItem.Text = "Show Velocity";
+            // 
+            // showForcesMenuItem1
+            // 
+            this.showForcesMenuItem1.CheckOnClick = true;
+            this.showForcesMenuItem1.Name = "showForcesMenuItem1";
+            this.showForcesMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.showForcesMenuItem1.Text = "Show Forces";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // tracePathToolStripMenuItem
             // 
             this.tracePathToolStripMenuItem.CheckOnClick = true;
             this.tracePathToolStripMenuItem.Name = "tracePathToolStripMenuItem";
-            this.tracePathToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.tracePathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.tracePathToolStripMenuItem.Text = "Trace Path";
             // 
             // aboutToolStripMenuItem
@@ -456,6 +472,8 @@
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showForcesMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

@@ -40,6 +40,9 @@ namespace CelestialSystem
         [Browsable(false)]
         public SolidBrush DisplayColor { get; set; }
 
+        [Browsable(false)]
+        public Vector2 TotalForce { get; internal set; }
+
 
         [Category("Appearance")]
         [Description("Color of the body")]

@@ -21,6 +21,8 @@ namespace CelestialSystem
 
         private AboutForm _aboutForm = new AboutForm();
 
+        private Pen _arrowPen = new Pen(Brushes.LightPink, 2) { StartCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor };
+
         public Form1()
         {
             InitializeComponent();
@@ -75,11 +77,22 @@ namespace CelestialSystem
             _renderer.Graphics.Clear(Color.Black);
             _celestialSystem.Draw(_renderer);
 
-            if(showVelocityToolStripMenuItem.Checked)
+            foreach (var body in _celestialSystem.Bodies)
             {
-                foreach(var body in _celestialSystem.Bodies)
+                if (showVelocityToolStripMenuItem.Checked)
                 {
-                    _renderer.DrawLine(Pens.LightPink, body.Position.X, body.Position.Y, (body.Position.X + body.Velocity.X * 2), (body.Position.Y + body.Velocity.Y * 2));
+                    float vScaleFactor = (float)Math.Log(body.Velocity.Length(), 1.08f);
+                    _arrowPen.Color = Color.Aqua;
+                    _renderer.DrawLine(_arrowPen, (body.Position.X + body.Velocity.X * vScaleFactor), (body.Position.Y + body.Velocity.Y * vScaleFactor), body.Position.X, body.Position.Y);
+
+                }
+
+                if(showForcesMenuItem1.Checked)
+                {
+                    float fScaleFactor = (float)Math.Log(body.TotalForce.Length(), 1.008f);
+
+                    _arrowPen.Color = Color.Orange;
+                    _renderer.DrawLine(_arrowPen, (body.Position.X - body.TotalForce.X * fScaleFactor), (body.Position.Y - body.TotalForce.Y * fScaleFactor), body.Position.X, body.Position.Y);
                 }
             }
         }
