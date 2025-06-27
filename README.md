@@ -1,14 +1,65 @@
 # CelestialSim
-This is a super basic celestial mechanics simulator implemented in C#. Movement of bodies is calculated using Newton's universal gravitational law.
+A gravitational N-body simulator implemented in C#, modeling celestial mechanics using Newtonian gravity with numerical integration.
 
-### Simulation Parameters
+## Numerical Methods
+Let $\Psi(o, t)$ denote the exact state vector of object $o$ at time $t$, defined as:
 
-**n** is the step count, that is, the number of steps/calculations per frame.\
-**Δt** is the time step used to calculate the positions of bodies. A smaller Δt yields more precise results but more steps are required for a fast simulation.\
-**G** is the universal gravitational constant. For the most part you can let G = 1.
+$$
+\Psi(o, t) = \begin{bmatrix} \vec{r}(t) \\ \vec{v}(t) \end{bmatrix} = \begin{bmatrix} x(t) \\ y(t) \\ \dot{x}(t) \\ \dot{y}(t) \end{bmatrix},
+$$
+where $\vec{r}(t)$ is position and $\vec{v}(t)$ is velocity. The system evolves according to the dynamics function $\varphi$:
+$$
+\frac{d}{dt} \Psi(o, t) = \varphi(\Psi(o, t), \mathcal{S}(t)),
+$$
+where $\mathcal{S}(t)$ represents the global state at time $t$.
 
-### Controls
+### Dynamics Function
+The gravitational dynamics are given by:
+$$
+\varphi(\Psi(o, t), \mathcal{S}(t)) = \begin{bmatrix}
+\vec{v}_i(t) \\
+G \displaystyle\sum_{\substack{o_j \in \mathcal{O} \\ o_j \ne o_i}}\frac{m_j\bigl( \vec{r}_j(t) - \vec{r}_i(t) \bigr)}{\| \vec{r}_j(t) - \vec{r}_i(t) \|^3}
+\end{bmatrix},
+$$
+where:
+- $\mathcal{O}$ = set of all celestial bodies
+- $G$ = gravitational constant
+- $m_j$ = mass of body $o_j$
+- $\vec{r}_i, \vec{r}_j$ = positions of bodies $o_i$ and $o_j$
 
-Click and drag to move around, select a body by clicking it.\
-Middle click is used to insert a body with the specified properties.\
-Mouse wheel to zoom in/out.
+### Euler's method
+This is a simple first-order approximation. We treat the evolution as linear over a small time step $\Delta t$:
+
+$$
+\Psi(o, t + \Delta t) \approx \Psi(o, t) + \Delta t \cdot \varphi(\Psi(o, t), \mathcal{S}(t)).
+$$
+
+### 2nd Order Runge-Kutta
+As the name says, this is a second-order approximation. It consists of two steps. We first compute the midpoint state between $t$ and $\Delta t$:
+$$
+\Psi_{\text{mid}} = \Psi(o, t) + \frac{\Delta t}{2} \cdot \varphi(\Psi(o, t), \mathcal{S}(t)).
+$$
+Then we update using the midpoint derivative:
+$$
+\Psi(o, t + \Delta t) \approx \Psi(o, t) + \Delta t \cdot \varphi(\Psi_{\text{mid}}, \mathcal{S}(t + \Delta t / 2)).
+$$
+
+
+## Simulation Parameters
+
+$\Delta t$ is the time step. A smaller time step yields more precise results, but more computational power is required.
+
+$G$ is the universal gravitational constant.
+
+$\Delta$ represents a "fast-forward" mechanism. Because the simulation is in real time, it might take a long time to observe a significant change. In that case, $\Delta$ is added to the total elapsed time since last calculation $\epsilon$, which in turn increases the number of calculation steps $n$:
+$$
+n = \left\lfloor \frac{\Delta + \epsilon}{\Delta t} \right\rfloor.
+$$
+
+When you use fast-forwarding, the simulation calculates all the skipped steps while keeping the same small time step (Δt) for accuracy.
+
+## Controls
+- Scroll: Zoom
+- Left click + drag: Pan view
+- Left click a body: Select
+- Middle click: Add new body
