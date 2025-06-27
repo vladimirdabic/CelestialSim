@@ -20,9 +20,9 @@ where $\mathcal{S}(t)$ represents the global state at time $t$.
 The gravitational dynamics are given by:
 
 $$
-\varphi(\Psi(o, t), \mathcal{S}(t)) = \begin{bmatrix}
+\varphi(\Psi(o_i, t), \mathcal{S}(t)) = \begin{bmatrix}
 \vec{v}_i(t) \\
-G \displaystyle\sum_{\substack{o_j \in \mathcal{O} \\ o_j \ne o_i}}\frac{m_j\bigl( \vec{r}_j(t) - \vec{r}_i(t) \bigr)}{\| \vec{r}_j(t) - \vec{r}_i(t) \|^3}
+G \sum_{o_j \ne o_i}\frac{m_j\bigl( \vec{r}_j(t) - \vec{r}_i(t) \bigr)}{\| \vec{r}_j(t) - \vec{r}_i(t) \|^3}
 \end{bmatrix},
 $$
 
