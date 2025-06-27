@@ -28,11 +28,11 @@ namespace CelestialSystem
 
         [Browsable(false)]
         [Description("World position of the body")]
-        public Vector2 Position { get; set; }
+        public Vector2 Position { get => _states[0].Position; }
         
         [Browsable(false)]
         [Description("Current velocity of the body")]
-        public Vector2 Velocity { get; set; }
+        public Vector2 Velocity { get => _states[0].Velocity; }
 
         [Browsable(false)]
         public float DisplaySize { get; set; }
@@ -56,22 +56,86 @@ namespace CelestialSystem
 
         private readonly float _minDrawingDiameter = 5f;
         private float _mass;
+        private CelestialSystem _parentSystem;
+        private State[] _states = new State[2];
 
-        public CelestialBody(float x, float y, float mass) : this(x, y, mass, Vector2.Zero)
+        public CelestialBody(CelestialSystem parent, float x, float y, float mass) : this(parent, x, y, mass, Vector2.Zero)
         {
         }
 
-        public CelestialBody(float x, float y, float mass, Vector2 velocity)
+        public CelestialBody(CelestialSystem parent, float x, float y, float mass, Vector2 velocity)
         {
-            Velocity = velocity;
-            Position = new Vector2(x, y);
+            _states[0] = new State()
+            {
+                Velocity = velocity,
+                Position = new Vector2(x, y)
+            };
+
+            //Velocity = velocity;
+            //Position = new Vector2(x, y);
             Mass = mass;
             DisplayColor = new SolidBrush(Color.White);
+            _parentSystem = parent;
+            parent.Bodies.Add(this);
         }
 
-        public void Move(float deltaTime)
+        /// <summary>
+        /// Gets the current instantaneous change 
+        /// </summary>
+        /// <returns>Derivative</returns>
+        public Derivative GetDerivative(int stateIdx)
         {
-            Position = new Vector2(Position.X + Velocity.X * deltaTime, Position.Y + Velocity.Y * deltaTime);
+            Vector2 velocity = Vector2.Zero;
+            Vector2 acceleration = Vector2.Zero;
+            State thisState = _states[stateIdx];
+
+            foreach (CelestialBody body in _parentSystem.Bodies)
+            {
+                // ignore self
+                if (body == this) continue;
+                State bodyState = body._states[stateIdx];
+
+                Vector2 dr = bodyState.Position - thisState.Position;
+                float d = dr.Length();
+
+                if (d <= 0) continue;
+
+                Vector2 grav_accel = _parentSystem.GravitationalConstant * body.Mass * dr / (d * d * d);
+                acceleration += grav_accel;
+            }
+
+            velocity = thisState.Velocity;
+
+            return new Derivative()
+            {
+                Velocity = velocity,
+                Acceleration = acceleration
+            };
+        }
+
+        public void EulerUpdate(float dt)
+        {
+            // Euler's method
+            Derivative ds = GetDerivative(0);
+            TotalForce = ds.Acceleration * Mass;
+
+            _states[0].Velocity += ds.Acceleration * dt;
+            _states[0].Position += ds.Velocity * dt;
+        }
+
+        public void RK2Midpoint(float dt)
+        {
+            Derivative ds = GetDerivative(0);
+            _states[1].Velocity = _states[0].Velocity + ds.Acceleration * (dt / 2);
+            _states[1].Position = _states[0].Position + ds.Velocity * (dt / 2);
+        }
+
+        public void RK2Update(float dt)
+        {
+            Derivative ds2 = GetDerivative(1);
+            _states[0].Velocity += ds2.Acceleration * dt;
+            _states[0].Position += ds2.Velocity * dt;
+            TotalForce = ds2.Acceleration * Mass;
         }
 
         public void Draw(Renderer r)
@@ -100,6 +164,18 @@ namespace CelestialSystem
         public float DistanceTo(float x, float y)
         {
             return (float)Math.Sqrt(Math.Pow(x - Position.X, 2) + Math.Pow(y - Position.Y, 2));
+        }
+
+        public struct Derivative
+        {
+            public Vector2 Velocity;
+            public Vector2 Acceleration;
+        }
+
+        private struct State
+        {
+            public Vector2 Position;
+            public Vector2 Velocity;
         }
     }
 }

@@ -50,8 +50,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.runSim = new System.Windows.Forms.CheckBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.simCountText = new System.Windows.Forms.TextBox();
             this.timeStepText = new System.Windows.Forms.TextBox();
             this.gConstText = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -66,6 +64,11 @@
             this.dVX = new System.Windows.Forms.TextBox();
             this.dVY = new System.Windows.Forms.TextBox();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.speedUpTime = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.methodToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.eulerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rK2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.renderWin)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -146,7 +149,8 @@
             this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.loadToolStripMenuItem,
-            this.saveToolStripMenuItem});
+            this.saveToolStripMenuItem,
+            this.methodToolStripMenuItem});
             this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
             this.simulationToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
             this.simulationToolStripMenuItem.Text = "Simulation";
@@ -154,21 +158,21 @@
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -229,9 +233,9 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.runSim);
             this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.simCountText);
+            this.groupBox2.Controls.Add(this.speedUpTime);
+            this.groupBox2.Controls.Add(this.runSim);
             this.groupBox2.Controls.Add(this.timeStepText);
             this.groupBox2.Controls.Add(this.gConstText);
             this.groupBox2.Controls.Add(this.label6);
@@ -248,31 +252,12 @@
             this.runSim.AutoSize = true;
             this.runSim.Checked = true;
             this.runSim.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.runSim.Location = new System.Drawing.Point(103, 49);
+            this.runSim.Location = new System.Drawing.Point(124, 50);
             this.runSim.Name = "runSim";
             this.runSim.Size = new System.Drawing.Size(46, 17);
             this.runSim.TabIndex = 6;
             this.runSim.Text = "Run";
             this.runSim.UseVisualStyleBackColor = true;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(102, 27);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(22, 13);
-            this.label8.TabIndex = 5;
-            this.label8.Text = "n =";
-            // 
-            // simCountText
-            // 
-            this.simCountText.Location = new System.Drawing.Point(125, 24);
-            this.simCountText.Name = "simCountText";
-            this.simCountText.Size = new System.Drawing.Size(46, 20);
-            this.simCountText.TabIndex = 4;
-            this.simCountText.Text = "1";
-            this.simCountText.WordWrap = false;
-            this.simCountText.TextChanged += new System.EventHandler(this.simCountText_TextChanged);
             // 
             // timeStepText
             // 
@@ -409,6 +394,50 @@
             this.propertyGrid1.TabIndex = 0;
             this.propertyGrid1.ToolbarVisible = false;
             // 
+            // speedUpTime
+            // 
+            this.speedUpTime.Location = new System.Drawing.Point(124, 24);
+            this.speedUpTime.Name = "speedUpTime";
+            this.speedUpTime.Size = new System.Drawing.Size(46, 20);
+            this.speedUpTime.TabIndex = 7;
+            this.speedUpTime.Text = "1";
+            this.speedUpTime.WordWrap = false;
+            this.speedUpTime.TextChanged += new System.EventHandler(this.speedUpTime_TextChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(100, 27);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(23, 13);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Δ =";
+            // 
+            // methodToolStripMenuItem
+            // 
+            this.methodToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.eulerToolStripMenuItem,
+            this.rK2ToolStripMenuItem});
+            this.methodToolStripMenuItem.Name = "methodToolStripMenuItem";
+            this.methodToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.methodToolStripMenuItem.Text = "Method";
+            // 
+            // eulerToolStripMenuItem
+            // 
+            this.eulerToolStripMenuItem.CheckOnClick = true;
+            this.eulerToolStripMenuItem.Name = "eulerToolStripMenuItem";
+            this.eulerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.eulerToolStripMenuItem.Text = "Euler";
+            this.eulerToolStripMenuItem.CheckedChanged += new System.EventHandler(this.eulerToolStripMenuItem_CheckedChanged);
+            // 
+            // rK2ToolStripMenuItem
+            // 
+            this.rK2ToolStripMenuItem.CheckOnClick = true;
+            this.rK2ToolStripMenuItem.Name = "rK2ToolStripMenuItem";
+            this.rK2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rK2ToolStripMenuItem.Text = "RK2";
+            this.rK2ToolStripMenuItem.CheckedChanged += new System.EventHandler(this.rK2ToolStripMenuItem_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -464,8 +493,6 @@
         private System.Windows.Forms.TextBox timeStepText;
         private System.Windows.Forms.TextBox gConstText;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox simCountText;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.CheckBox runSim;
         private System.Windows.Forms.ToolStripMenuItem simulationToolStripMenuItem;
@@ -474,6 +501,11 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showForcesMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox speedUpTime;
+        private System.Windows.Forms.ToolStripMenuItem methodToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem eulerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rK2ToolStripMenuItem;
     }
 }
 

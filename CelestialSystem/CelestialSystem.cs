@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 
 namespace CelestialSystem
 {
@@ -15,35 +16,14 @@ namespace CelestialSystem
         public readonly List<CelestialBody> Bodies;
         public float GravitationalConstant = 1f;
         public float TimeStep = 1f;
-        public int CalculationCount = 1;
+        public float FastForwardTime = 0f;
+
+        public Method SimulationMethod = Method.Euler;
 
         public CelestialSystem(float timeStep)
         {
             Bodies = new List<CelestialBody>();
             TimeStep = timeStep;
-        }
-
-        public void Accelerate(CelestialBody target, CelestialBody source, float deltaTime)
-        {
-            Vector2 vecTargetToSource = source.Position - target.Position;
-            float distanceSquared = vecTargetToSource.LengthSquared();
-
-            if (distanceSquared == 0) return;
-
-            float force = GravitationalConstant * (target.Mass * source.Mass) / distanceSquared;
-
-            // Unit vector
-            Vector2 forceDirection = vecTargetToSource / vecTargetToSource.Length();
-            // Scale the unit vector
-            Vector2 forceVector = forceDirection * force;
-
-            // a = F/m
-            // v += a * dt
-            target.Velocity += (forceVector / target.Mass) * deltaTime;
-            target.TotalForce += forceVector;
-
-            // Not actually needed since the body comes later in the update loop...
-            //source.Velocity -= (forceVector / source.Mass) * deltaTime;
         }
 
         public void Draw(Renderer r)
@@ -52,53 +32,42 @@ namespace CelestialSystem
                 body.Draw(r);
         }
 
-        public void Update()
+        public void Update(float dt)
         {
-            for (int i = 0; i < CalculationCount; ++i)
-                Step();
-        }
+            int steps = (int)((dt + FastForwardTime) / TimeStep);
 
-        public void Step()
-        {
-            CelestialBody[] bodies = Bodies.ToArray();
-
-            // Accelerate each body with respect to others
-            for(int i = 0; i < bodies.Length; i++)
+            for (int i = 0; i < steps; ++i)
             {
-                CelestialBody target = bodies[i];
-                target.TotalForce = Vector2.Zero;
-                
-                for(int j = 0; j < bodies.Length; j++)
+                switch (SimulationMethod)
                 {
-                    // ignore target body
-                    if (j == i) continue;
-                    CelestialBody source = bodies[j];
+                    case Method.Euler:
+                        foreach (CelestialBody body in Bodies)
+                            body.EulerUpdate(TimeStep);
+                        break;
 
-                    Accelerate(target, source, TimeStep);
+                    case Method.RK2:
+                        foreach (CelestialBody body in Bodies)
+                            body.RK2Midpoint(TimeStep);
 
-                    if (target.Collides(source))
-                    {
-                        if(target.Mass > source.Mass)
-                            Bodies.Remove(source);
-                        else
-                            Bodies.Remove(target);
-                    }
+                        foreach (CelestialBody body in Bodies)
+                            body.RK2Update(TimeStep);
+                        break;
                 }
             }
-
-            foreach(var body in Bodies)
-                body.Move(TimeStep);
         }
 
         public void ToBinary(BinaryWriter w)
         {
             // File Version
-            w.Write((byte)0);
+            w.Write((byte)1);
 
             // Settings
             w.Write(GravitationalConstant);
             w.Write(TimeStep);
-            w.Write(CalculationCount);
+            w.Write(0); // Step count, deprecated
+
+            w.Write(FastForwardTime);
+            w.Write((byte)SimulationMethod);
 
             // Bodies
             w.Write(Bodies.Count);
@@ -124,12 +93,14 @@ namespace CelestialSystem
         {
             Bodies.Clear();
 
-            // Useless for now
             byte fileVersion = r.ReadByte();
 
             GravitationalConstant = r.ReadSingle();
             TimeStep = r.ReadSingle();
-            CalculationCount = r.ReadInt32();
+            _ = r.ReadInt32(); // Step count, deprecated
+            
+            FastForwardTime = fileVersion > 0 ? r.ReadSingle() : 0f;
+            SimulationMethod = fileVersion > 0 ? (Method)r.ReadByte() : Method.Euler;
 
             int bodies = r.ReadInt32();
             for(int i = 0; i < bodies; i++)
@@ -147,13 +118,16 @@ namespace CelestialSystem
                 byte cG = r.ReadByte();
                 byte cB = r.ReadByte();
 
-                CelestialBody body = new CelestialBody(pX, pY, mass, new Vector2(vX, vY))
+                CelestialBody body = new CelestialBody(this, pX, pY, mass, new Vector2(vX, vY))
                 {
                     DisplayColor = new SolidBrush(Color.FromArgb(cA, cR, cG, cB))
                 };
-
-                Bodies.Add(body);
             }
+        }
+
+        public enum Method
+        {
+            Euler, RK2
         }
     }
 }
