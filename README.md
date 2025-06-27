@@ -7,20 +7,25 @@ Let $\Psi(o, t)$ denote the exact state vector of object $o$ at time $t$, define
 $$
 \Psi(o, t) = \begin{bmatrix} \vec{r}(t) \\ \vec{v}(t) \end{bmatrix} = \begin{bmatrix} x(t) \\ y(t) \\ \dot{x}(t) \\ \dot{y}(t) \end{bmatrix},
 $$
+
 where $\vec{r}(t)$ is position and $\vec{v}(t)$ is velocity. The system evolves according to the dynamics function $\varphi$:
+
 $$
 \frac{d}{dt} \Psi(o, t) = \varphi(\Psi(o, t), \mathcal{S}(t)),
 $$
+
 where $\mathcal{S}(t)$ represents the global state at time $t$.
 
 ### Dynamics Function
 The gravitational dynamics are given by:
+
 $$
 \varphi(\Psi(o, t), \mathcal{S}(t)) = \begin{bmatrix}
 \vec{v}_i(t) \\
 G \displaystyle\sum_{\substack{o_j \in \mathcal{O} \\ o_j \ne o_i}}\frac{m_j\bigl( \vec{r}_j(t) - \vec{r}_i(t) \bigr)}{\| \vec{r}_j(t) - \vec{r}_i(t) \|^3}
 \end{bmatrix},
 $$
+
 where:
 - $\mathcal{O}$ = set of all celestial bodies
 - $G$ = gravitational constant
@@ -36,10 +41,13 @@ $$
 
 ### 2nd Order Runge-Kutta
 As the name says, this is a second-order approximation. It consists of two steps. We first compute the midpoint state between $t$ and $\Delta t$:
+
 $$
 \Psi_{\text{mid}} = \Psi(o, t) + \frac{\Delta t}{2} \cdot \varphi(\Psi(o, t), \mathcal{S}(t)).
 $$
+
 Then we update using the midpoint derivative:
+
 $$
 \Psi(o, t + \Delta t) \approx \Psi(o, t) + \Delta t \cdot \varphi(\Psi_{\text{mid}}, \mathcal{S}(t + \Delta t / 2)).
 $$
